@@ -32,6 +32,7 @@ function Login(props) {
             return setState({ ...state, is_loading: false })
         }
         setState({ ...state, email: "", password: "", is_loading: false })
+        alert(res?.message)
         return props?.on_reload()
 
     }
