@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { post_signup } from '../../api/api'
 import Loading from '../common/Loading'
 
 function Signup(props) {
@@ -18,8 +19,31 @@ function Signup(props) {
         })
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
+        if (!state?.name || !state?.email || !state?.password || !state?.confirmPassword) return alert("Please fill all the field!")
+
+        if (state?.password !== state?.confirmPassword) {
+            setState({ ...state, password: "", confirmPassword: "" })
+            return alert("Password and Confirm Password didn't match!")
+        }
+
+        const data = {
+            name: state?.name,
+            email: state?.email,
+            password: state?.password
+        }
+        setState({ ...state, is_loading: true })
+        const res = await post_signup(data)
+        if (!res || res?.error) {
+            alert("Fail to signup!")
+            return setState({ ...state, is_loading: false, password: '', confirmPassword: "" })
+        }
+        alert(res?.message)
+        setState({ ...state, is_loading: false, password: '', confirmPassword: "", email: '', name: "" })
+        return props.on_change_page(true)
+
+
     }
 
     return (
